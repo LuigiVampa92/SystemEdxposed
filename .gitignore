@@ -1,0 +1,5 @@
+*.DS_Store
+*.zip
+system/bin/
+system/etc/
+utils/fun_c_selinux.sh
