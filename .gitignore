@@ -1,5 +1,14 @@
 *.DS_Store
 *.zip
-system/bin/
-system/etc/
-utils/fun_c_selinux.sh
+*.jks
+*.apk
+*.iml
+out/
+native/out/
+.idea/
+.gradle/
+build/
+captures/
+/config.prop
+/update.sh
+/local.properties
