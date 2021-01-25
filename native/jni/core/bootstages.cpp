@@ -361,28 +361,4 @@ void boot_complete(int client) {
     setup_logfile(false);
 
     LOGI("** boot_complete triggered\n");
-
-//    if (safe_mode)
-//        return;
-
-    // At this point it's safe to create the folder
-//    if (access(SECURE_DIR, F_OK) != 0)
-//        xmkdir(SECURE_DIR, 0700);
-
-//    auto_start_magiskhide();
-
-//    if (!check_manager()) {
-//        if (access(MANAGERAPK, F_OK) == 0) {
-            // Only try to install APK when no manager is installed
-            // Magisk Manager should be upgraded by itself, not through recovery installs
-//            rename(MANAGERAPK, "/data/magisk.apk");
-//            install_apk("/data/magisk.apk");
-//        } else {
-            // Install stub
-//            auto init = MAGISKTMP + "/magiskinit";
-//            exec_command_sync(init.data(), "-x", "manager", "/data/magisk.apk");
-//            install_apk("/data/magisk.apk");
-//        }
-//    }
-//    unlink(MANAGERAPK);
 }

@@ -185,22 +185,13 @@ static void magic_mount(const string &sdir, const string &ddir = "") {
 #define LIBSELINUX  "/system/" LIBNAME "/libselinux.so"
 #define NEW_INITRC  "/system/etc/init/hw/init.rc"
 
-// TODO : проверить на 10 андроиде !!
 void SARBase::patch_rootdir() {
     string tmp_dir;
     const char *sepol;
 
-//    if (access("/sbin", F_OK) == 0) {
-//        tmp_dir = "/sbin";
-//        sepol = "/sbin/.se";
-//    } else {
-        char buf[8];
-        gen_rand_str(buf, sizeof(buf));
-//        tmp_dir = "/dev/"s + buf;
-        tmp_dir = "/dev/sys_ctl";
-        xmkdir(tmp_dir.data(), 0);
-        sepol = "/dev/.se";
-//    }
+    tmp_dir = "/dev/sys_ctl";
+    xmkdir(tmp_dir.data(), 0);
+    sepol = "/dev/.se";
 
     setup_tmp(tmp_dir.data());
     chdir(tmp_dir.data());
@@ -208,14 +199,9 @@ void SARBase::patch_rootdir() {
     mount_rules_dir(BLOCKDIR, MIRRDIR);
 
     // Mount system_root mirror
-//    xmkdir(ROOTMIR, 0755);
     xmkdir(ROOTMIR, 0700);
     xmount("/", ROOTMIR, nullptr, MS_BIND, nullptr);
     mount_list.emplace_back(tmp_dir + "/" ROOTMIR);
-
-    // Recreate original sbin structure if necessary
-//    if (tmp_dir == "/sbin")
-//        recreate_sbin(ROOTMIR "/sbin", true);
 
     // Patch init
     int patch_count;
@@ -265,22 +251,6 @@ void SARBase::patch_rootdir() {
     }
     close(sockfd);
 
-    // Handle overlay.d
-//    load_overlay_rc(ROOTOVL);
-//    if (access(ROOTOVL "/sbin", F_OK) == 0) {
-        // Move files in overlay.d/sbin into tmp_dir
-//        mv_path(ROOTOVL "/sbin", ".");
-//    }
-
-    // Patch init.rc
-//    if (access("/init.rc", F_OK) == 0) {
-//        patch_init_rc("/init.rc", ROOTOVL "/init.rc", tmp_dir.data());
-//    } else {
-        // Android 11's new init.rc
-//        xmkdirs(dirname(ROOTOVL NEW_INITRC), 0755);
-//        patch_init_rc(NEW_INITRC, ROOTOVL NEW_INITRC, tmp_dir.data());
-//    }
-
     // Mount rootdir
     magic_mount(ROOTOVL);
     int dest = xopen(ROOTMNT, O_WRONLY | O_CREAT | O_CLOEXEC, 0);
@@ -294,7 +264,6 @@ void SARBase::patch_rootdir() {
 #define TMP_RULESDIR "/.backup/.sepolicy.rules"
 
 
-// TODO : проверить на 10 андроиде !!
 void RootFSInit::patch_rootfs() {
     // Handle custom sepolicy rules
     xmkdir(TMP_MNTDIR, 0755);
@@ -309,51 +278,8 @@ void RootFSInit::patch_rootfs() {
         auto init = raw_data::mmap_rw("/init");
         init.patch({ make_pair(SPLIT_PLAT_CIL, "xxx") });
     }
-
-    // Handle overlays
-//    if (access("/overlay.d", F_OK) == 0) {
-//        LOGD("Merge overlay.d\n");
-//        load_overlay_rc("/overlay.d");
-//        mv_path("/overlay.d", "/");
-//    }
-
-//    patch_init_rc("/init.rc", "/init.p.rc", "/sbin");
-//    rename("/init.p.rc", "/init.rc");
-
-    // Create hardlink mirror of /sbin to /root
-//    mkdir("/root", 0750);
-//    clone_attr("/sbin", "/root");
-//    link_path("/sbin", "/root");
-
-    // Dump magiskinit as magisk
-//    int fd = xopen("/sbin/magisk", O_WRONLY | O_CREAT, 0755);
-//    write(fd, self.buf, self.sz);
-//    close(fd);
 }
 
 void MagiskProxy::start() {
-    // Mount rootfs as rw to do post-init rootfs patches
-//    xmount(nullptr, "/", nullptr, MS_REMOUNT, nullptr);
-
-    // Backup stuffs before removing them
-//    self = raw_data::read("/sbin/magisk");
-//    config = raw_data::read("/.backup/.magisk");
-//    char custom_rules_dir[64];
-//    custom_rules_dir[0] = '\0';
-//    xreadlink(TMP_RULESDIR, custom_rules_dir, sizeof(custom_rules_dir));
-
-//    unlink("/sbin/magisk");
-//    rm_rf("/.backup");   // TODO : важно !
-
-//    setup_tmp("/sbin");   // TODO : закомментировать для того чтобы не создавать ФС маджиска на устройстве
-
-    // Create symlinks pointing back to /root
-//    recreate_sbin("/root", false);   // TODO : закомментировать для того чтобы не создавать ФС маджиска на устройстве
-
-//    if (custom_rules_dir[0])        // TODO : закомментировать для того чтобы не создавать ФС маджиска на устройстве
-//        xsymlink(custom_rules_dir, "/sbin/" RULESDIR);      // TODO : закомментировать для того чтобы не создавать ФС маджиска на устройстве
-
-    // Tell magiskd to remount rootfs
-//    setenv("REMOUNT_ROOT", "1", 1);
-//    execv("/sbin/magisk", argv);
+    // ignore
 }

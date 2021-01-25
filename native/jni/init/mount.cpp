@@ -376,9 +376,6 @@ void BaseInit::exec_init() {
         if (xumount(p.data()) == 0)
             LOGD("Unmount [%s]\n", p.data());
     }
-
-    // TODO : удаление /.backup и /dev/sys_ctl приводит к тому что система не загружается до конца
-
     execv("/init", argv);
     exit(1);
 }
@@ -395,29 +392,13 @@ void MagiskInit::setup_tmp(const char *path) {
     if (path == "/sbin") {
         return;
     }
-//    LOGD("Setup Magisk tmp at %s\n", path);
-//    xmount("tmpfs", path, "tmpfs", 0, "mode=755");
+
     xmount("tmpfs", path, "tmpfs", 0, "mode=700");
 
     chdir(path);
     xmkdir(INTLROOT, 0700);
     xmkdir(MIRRDIR, 0);
     xmkdir(BLOCKDIR, 0);
-
-//    int fd = xopen(INTLROOT "/config", O_WRONLY | O_CREAT, 0);
-//    xwrite(fd, config.buf, config.sz);
-//    close(fd);
-//    fd = xopen("magiskinit", O_WRONLY | O_CREAT, 0755);
-//    xwrite(fd, self.buf, self.sz);
-//    close(fd);
-//    dump_magisk("magisk", 0755);
-//    patch_socket_name("magisk");
-
-    // Create applet symlinks
-//    for (int i = 0; applet_names[i]; ++i)
-//        xsymlink("./magisk", applet_names[i]);
-//    xsymlink("./magiskinit", "magiskpolicy");
-//    xsymlink("./magiskinit", "supolicy");
 
     chdir("/");
 }

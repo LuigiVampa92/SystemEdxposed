@@ -49,26 +49,6 @@ static bool unxz(int fd, const uint8_t *buf, size_t size) {
     return true;
 }
 
-//int dump_magisk(const char *path, mode_t mode) {
-//    int fd = xopen(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, mode);
-//    if (fd < 0)
-//        return 1;
-//    if (!unxz(fd, magisk_xz, sizeof(magisk_xz)))
-//        return 1;
-//    close(fd);
-//    return 0;
-//}
-
-//static int dump_manager(const char *path, mode_t mode) {
-//    int fd = xopen(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, mode);
-//    if (fd < 0)
-//        return 1;
-//    if (!unxz(fd, manager_xz, sizeof(manager_xz)))
-//        return 1;
-//    close(fd);
-//    return 0;
-//}
-
 class RecoveryInit : public BaseInit {
 public:
     RecoveryInit(char *argv[], cmdline *cmd) : BaseInit(argv, cmd) {}
@@ -136,39 +116,16 @@ int main(int argc, char *argv[]) {
     auto name = basename(argv[0]);
     if (name == "magisk"sv)
         return magisk_proxy_main(argc, argv);
-//     for (int i = 0; init_applet[i]; ++i) {
-//         if (strcmp(name, init_applet[i]) == 0)
-//             return (*init_applet_main[i])(argc, argv);
-//     }
-//
-// #if ENABLE_TEST
-//     if (getenv("INIT_TEST") != nullptr)
-//         return test_main(argc, argv);
-// #endif
-
-
-
-// TODO : закоментировать чтобы предотвратить возможную распаковку бинарей и приложения маджиска
 
     if (argc > 1 && argv[1] == "-x"sv) {
         if (argv[2] == "magisk"sv)
             return 0;
-//             return dump_magisk(argv[3], 0755);
         else if (argv[2] == "manager"sv)
             return 0;
-//             return dump_manager(argv[3], 0644);
     }
-
-
-
-// TODO : защита от запуска из работающей системы ?
 
     if (getpid() != 1)
         return 1;
-
-
-
-// TODO : логика выбора способа инита в зависимости от режима/SAR/прочей херни. Лучше не трогать ?
 
     BaseInit *init;
     cmdline cmd{};
